@@ -87,5 +87,4 @@ object ExampleUiApp extends App {
     logic.fold(die, _ => 0)
   }
 }
-
 ```

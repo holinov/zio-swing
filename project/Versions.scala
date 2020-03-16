@@ -1,5 +1,5 @@
 object Versions {
-  val ProjectVersion = "0.0.2"
+  val ProjectVersion = "0.0.3"
 
   val ZioVersion       = "1.0.0-RC17"
   val ZioCatsVersion   = "2.0.0.0-RC10"
