@@ -12,7 +12,7 @@
 ### Import 
 ```sbt
 resolvers += Resolver.bintrayRepo("holinov", "maven") 
-libraryDependencies += "FruTTecH" %% "zio-swing-core" % "0.0.1"
+libraryDependencies += "FruTTecH" %% "zio-swing-core" % "0.0.3"
 ``` 
 
 ### Example 
