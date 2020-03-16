@@ -3,17 +3,10 @@ package zio.gui.zswing.components
 import java.awt.{ Component, Dimension, PopupMenu }
 import java.awt.event.ActionEvent
 
-import ZList.ObservableListModel
 import javax.swing._
 import zio._
-import zio.gui.zswing.components.ZLayoutManager.{
-  Border,
-  BorderLayoutConstraints,
-  Box,
-  Flow,
-  LayoutConstraints,
-  NoConstraints
-}
+import zio.gui.zswing.components.ZLayoutManager._
+import zio.gui.zswing.components.ZList.ObservableListModel
 
 trait ZComponent[+T <: Component] {
   def component: T
@@ -72,6 +65,7 @@ object ZComponent extends ZComponentFactory[Task] {
   def list[T](ts: T*): Task[ZList[T]] =
     ObservableListModel.make[T].tap(_.addItems(ts)) >>= (mdl => list(mdl))
 
+  // Layouts
   def panel[C <: LayoutConstraints](mgr: ZLayoutManager[C]): Task[ZLayoutPanel[C]] =
     panel(_ => ZIO.succeed(mgr))
 

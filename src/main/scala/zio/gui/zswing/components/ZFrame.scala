@@ -1,6 +1,6 @@
 package zio.gui.zswing.components
 
-import java.awt.event.{WindowEvent, WindowListener}
+import java.awt.event.{ WindowEvent, WindowListener }
 import java.awt.Container
 
 import ZFrame.FramePromise
@@ -9,8 +9,7 @@ import ZMenu._
 import javax.swing.JFrame
 import zio._
 
-class ZFrame(jFrame: JFrame, onClose: FramePromise[Unit])
-    extends ZContainer[JFrame] {
+class ZFrame(jFrame: JFrame, onClose: FramePromise[Unit]) extends ZContainer[JFrame] {
   override def component: JFrame = jFrame
 
   def waitWindowClosed: Task[Unit] = onClose.await
@@ -19,8 +18,8 @@ class ZFrame(jFrame: JFrame, onClose: FramePromise[Unit])
 
   def setVisible(visible: Boolean): Task[Unit] =
     ZIO.effect(jFrame.setVisible(visible))
-  def show: Task[Unit] = setVisible(true)
-  def hide: Task[Unit] = setVisible(false)
+  def show: Task[Unit]    = setVisible(true)
+  def hide: Task[Unit]    = setVisible(false)
   def dispose: Task[Unit] = ZIO.effect(jFrame.dispose())
 
   def setMenu(mainMenu: MenuRoot): Task[Unit] =
@@ -37,26 +36,22 @@ class ZFrame(jFrame: JFrame, onClose: FramePromise[Unit])
 object ZFrame {
   type FramePromise[T] = Promise[Nothing, T]
 
-  def make(title: String,
-           mainMenu: MenuRoot = MenuRoot.Empty,
-           traceEvents: Boolean = false): Task[ZFrame] = {
-    def runMessageQueue(jFrame: JFrame,
-                        windowEvents: Queue[ZFrameEvent],
-                        onClosePromise: FramePromise[Unit]) = {
+  def make(title: String, mainMenu: MenuRoot = MenuRoot.Empty, traceEvents: Boolean = false): Task[ZFrame] = {
+    def runMessageQueue(jFrame: JFrame, windowEvents: Queue[ZFrameEvent], onClosePromise: FramePromise[Unit]) = {
       val processOneMessage =
         for {
           msg <- windowEvents.take
           _ <- ZIO
-            .effect(
-              s"windowEvent: $msg isSame: ${msg.event.getWindow == jFrame}"
-            )
-            .when(traceEvents)
+                .effect(
+                  s"windowEvent: $msg isSame: ${msg.event.getWindow == jFrame}"
+                )
+                .when(traceEvents)
           _ <- msg match {
-            case Closing(event) =>
-              ZIO.effect(jFrame.dispose()).when(event.getWindow == jFrame)
-            case Closed(_) => onClosePromise.succeed(())
-            case _         => ZIO.unit
-          }
+                case Closing(event) =>
+                  ZIO.effect(jFrame.dispose()).when(event.getWindow == jFrame)
+                case Closed(_) => onClosePromise.succeed(())
+                case _         => ZIO.unit
+              }
         } yield ()
 
       processOneMessage.forever.fork
@@ -64,27 +59,27 @@ object ZFrame {
 
     for {
       windowEvents <- Queue.unbounded[ZFrameEvent]
-      rt <- ZIO.runtime[Any]
-      frame <- ZIO.effect(new JFrame(title))
-      menu <- mainMenu.renderOrNull
-      _ <- ZIO.effect(frame.setJMenuBar(menu))
+      rt           <- ZIO.runtime[Any]
+      frame        <- ZIO.effect(new JFrame(title))
+      menu         <- mainMenu.renderOrNull
+      _            <- ZIO.effect(frame.setJMenuBar(menu))
       windowListener <- ZIO.effect(new WindowListener {
-        private def event(event: ZFrameEvent): Unit =
-          rt.unsafeRun(windowEvents.offer(event).unit)
+                         private def event(event: ZFrameEvent): Unit =
+                           rt.unsafeRun(windowEvents.offer(event).unit)
 
-        override def windowOpened(e: WindowEvent): Unit = event(Opened(e))
-        override def windowClosing(e: WindowEvent): Unit = event(Closing(e))
-        override def windowClosed(e: WindowEvent): Unit = event(Closed(e))
-        override def windowIconified(e: WindowEvent): Unit = event(Iconified(e))
-        override def windowDeiconified(e: WindowEvent): Unit =
-          event(Deiconified(e))
-        override def windowActivated(e: WindowEvent): Unit = event(Activated(e))
-        override def windowDeactivated(e: WindowEvent): Unit =
-          event(Deactivated(e))
-      })
+                         override def windowOpened(e: WindowEvent): Unit    = event(Opened(e))
+                         override def windowClosing(e: WindowEvent): Unit   = event(Closing(e))
+                         override def windowClosed(e: WindowEvent): Unit    = event(Closed(e))
+                         override def windowIconified(e: WindowEvent): Unit = event(Iconified(e))
+                         override def windowDeiconified(e: WindowEvent): Unit =
+                           event(Deiconified(e))
+                         override def windowActivated(e: WindowEvent): Unit = event(Activated(e))
+                         override def windowDeactivated(e: WindowEvent): Unit =
+                           event(Deactivated(e))
+                       })
       onClosePromise <- Promise.make[Nothing, Unit]
-      _ <- runMessageQueue(frame, windowEvents, onClosePromise)
-      _ <- ZIO.effect(frame.addWindowListener(windowListener))
+      _              <- runMessageQueue(frame, windowEvents, onClosePromise)
+      _              <- ZIO.effect(frame.addWindowListener(windowListener))
     } yield new ZFrame(frame, onClosePromise)
   }
 }

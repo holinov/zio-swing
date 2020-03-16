@@ -3,20 +3,23 @@ import Versions._
 resolvers ++= Seq(
   Resolver.mavenLocal,
   Resolver.sonatypeRepo("releases"),
-  Resolver.sonatypeRepo("snapshots")
+  Resolver.sonatypeRepo("snapshots"),
+  Resolver.jcenterRepo
 )
 
 lazy val commonSettings = Seq(
 // Refine scalac params from tpolecat
   addCompilerPlugin(scalafixSemanticdb),
   scalacOptions ++= Seq("-Ywarn-unused", "-Yrangepos"),
-  scalacOptions --= Seq("-Xfatal-warnings")
+  scalacOptions in console -= "-Xfatal-warnings",
+  licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
+  bintrayVcsUrl := Some("git@github.com:you/your-repo.git")
 )
 
 lazy val deps = libraryDependencies ++= Seq(
-  "dev.zio" %% "zio" % zioVersion,
-  "dev.zio" %% "zio-streams" % zioVersion,
-  "dev.zio" %% "zio-test" % zioVersion % "test",
+  "dev.zio" %% "zio"          % zioVersion,
+  "dev.zio" %% "zio-streams"  % zioVersion,
+  "dev.zio" %% "zio-test"     % zioVersion % "test",
   "dev.zio" %% "zio-test-sbt" % zioVersion % "test"
 )
 

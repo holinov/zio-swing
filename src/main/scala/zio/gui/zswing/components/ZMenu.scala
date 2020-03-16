@@ -1,6 +1,6 @@
 package zio.gui.zswing.components
 
-import javax.swing.{JMenu, JMenuBar, JMenuItem}
+import javax.swing.{ JMenu, JMenuBar, JMenuItem }
 import zio._
 
 object ZMenu {
@@ -9,8 +9,8 @@ object ZMenu {
       if (this == MenuRoot.Empty) ZIO.succeed(null)
       else
         for {
-          rt <- ZIO.runtime[Any]
-          bar <- ZIO.effectTotal { new JMenuBar() }
+          rt       <- ZIO.runtime[Any]
+          bar      <- ZIO.effectTotal { new JMenuBar() }
           topItems <- ZIO.foreach(childs)(p => buildMenuPart(rt, p))
         } yield {
           topItems.foreach(bar.add)
@@ -25,8 +25,8 @@ object ZMenu {
       case SubMenu(name, childs) =>
         for {
           menuItem <- ZIO.effect(new JMenu(name))
-          pats <- ZIO.foreach(childs)(p => buildMenuPart(rt, p))
-          _ <- ZIO.effect(pats.foreach(menuItem.add))
+          pats     <- ZIO.foreach(childs)(p => buildMenuPart(rt, p))
+          _        <- ZIO.effect(pats.foreach(menuItem.add))
         } yield menuItem
       case MenuItem(name, action) =>
         ZIO.effect {
@@ -38,7 +38,7 @@ object ZMenu {
 
   sealed trait MenuPart
   final case class SubMenu(name: String, childs: Seq[MenuPart]) extends MenuPart
-  final case class MenuItem(name: String, action: Task[Unit]) extends MenuPart
+  final case class MenuItem(name: String, action: Task[Unit])   extends MenuPart
 
   def apply(childs: MenuPart*): MenuRoot = new MenuRoot(childs)
 

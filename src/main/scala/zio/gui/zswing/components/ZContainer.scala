@@ -1,17 +1,17 @@
 package zio.gui.zswing.components
 
-import java.awt.{Component, Container}
+import java.awt.{ Component, Container }
 
 import zio.Task
 
 trait ZContainer[+T <: Container] extends ZComponent[T] {
 
   def add(name: String, comp: ZComponent[_ <: Component]): Task[Unit] =
-    Task(component.add(name, comp.component))
+    Task(component.add(name, comp.component)).unit
   def add(comp: ZComponent[_ <: Component]): Task[Unit] =
-    Task(component.add(comp.component))
+    Task(component.add(comp.component)).unit
   def add(comp: Task[ZComponent[_ <: Component]]): Task[Unit] =
-    comp.map(comp => component.add(comp.component))
+    comp.map(comp => component.add(comp.component)).unit
   def addAll(comps: ZComponent[_ <: Component]*): Task[Unit] =
     Task.foreach(comps)(add).unit
 }

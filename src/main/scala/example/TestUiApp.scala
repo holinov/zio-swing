@@ -1,4 +1,4 @@
-package fruttech.crbot
+package example
 
 import java.awt.Dimension
 
