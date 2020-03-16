@@ -1,0 +1,1 @@
+# zio-swing is thin bridge library to have FP GUI
