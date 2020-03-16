@@ -1,14 +1,20 @@
 # zio-swing is thin bridge library to have FP GUI
 
 ## To Do
-- [ ] Publish to Bintray 
+- [x] Publish to Bintray 
 - [ ] Publish to Maven Central 
 - [ ] Add to zio ecosystem
 - [ ] Import more controls and layouts
 - [ ] More possibilities to subscrbe events
 - [ ] GuiHelpers evoluton to SimpleDialogDSL
  
-## Usage example 
+## Usage
+### Import 
+```sbt
+resolvers += Resolver.bintrayRepo("holinov", "maven") 
+libraryDependencies += "FruTTecH" %% "zio-swing" % "0.0.1"
+``` 
+### Example 
 ```scala
 package example
 
