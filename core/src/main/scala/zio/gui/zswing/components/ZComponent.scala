@@ -3,7 +3,7 @@ package zio.gui.zswing.components
 import java.awt.{ Component, Dimension, PopupMenu }
 import java.awt.event.ActionEvent
 
-import javax.swing._
+import javax.swing.{ Box => _, _ }
 import zio._
 import zio.gui.zswing.components.ZLayoutManager._
 import zio.gui.zswing.components.ZList.ObservableListModel

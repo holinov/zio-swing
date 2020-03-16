@@ -37,6 +37,10 @@ trait ZComponentFactory[F[_]] {
   def flow(cmps: ZComponent[Component]*): F[ZLayoutPanel[NoConstraints.type]]
 
   def box(vertical: Boolean): F[ZLayoutPanel[NoConstraints.type]]
+
+  def vBox: F[ZLayoutPanel[NoConstraints.type]] = box(true)
+  def hHox: F[ZLayoutPanel[NoConstraints.type]] = box(false)
+
   def border: F[ZLayoutPanel[BorderLayoutConstraints]]
 }
 

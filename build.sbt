@@ -7,33 +7,42 @@ resolvers ++= Seq(
   Resolver.jcenterRepo
 )
 
-lazy val commonSettings = Seq(
+def module(moduleName: String) = Seq(
 // Refine scalac params from tpolecat
   addCompilerPlugin(scalafixSemanticdb),
   scalacOptions ++= Seq("-Ywarn-unused", "-Yrangepos"),
   scalacOptions in console -= "-Xfatal-warnings",
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-  bintrayVcsUrl := Some("git@github.com:you/your-repo.git")
+  bintrayVcsUrl := Some("git@github.com:holinov/zio-swing.git"),
+  organization := "FruTTecH",
+  name := moduleName,
+  version := ProjectVersion,
+  scalaVersion := "2.13.1",
+  maxErrors := 3,
+  testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
 )
 
-lazy val deps = libraryDependencies ++= Seq(
-  "dev.zio" %% "zio"          % zioVersion,
-  "dev.zio" %% "zio-streams"  % zioVersion,
-  "dev.zio" %% "zio-test"     % zioVersion % "test",
-  "dev.zio" %% "zio-test-sbt" % zioVersion % "test"
+lazy val zioDeps = libraryDependencies ++= Seq(
+  "dev.zio" %% "zio"          % ZioVersion,
+  "dev.zio" %% "zio-streams"  % ZioVersion,
+  "dev.zio" %% "zio-test"     % ZioVersion % "test",
+  "dev.zio" %% "zio-test-sbt" % ZioVersion % "test"
 )
+
+lazy val core = (project in file("core"))
+  .settings(
+    module("zio-swing-core"),
+    zioDeps
+  )
+
+lazy val controls = (project in file("controls"))
+  .settings(
+    module("zio-swing-controls")
+  )
+  .dependsOn(core)
 
 lazy val root = (project in file("."))
-  .settings(
-    organization := "FruTTecH",
-    name := "zio-swing",
-    version := "0.0.1",
-    scalaVersion := "2.13.1",
-    maxErrors := 3,
-    commonSettings,
-    deps,
-    testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
-  )
+  .aggregate(core, controls)
 
 // Aliases
 addCommandAlias("rel", "reload")

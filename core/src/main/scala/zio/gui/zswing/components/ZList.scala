@@ -21,14 +21,16 @@ object ZList {
       override def getSize: Int                = state.size
       override def getElementAt(index: Int): T = state(index)
 
-      def addItem(item: T): Task[Unit] =
+      def addItem(item: T): Task[Unit] = {
+        def trim(i: Int) = if (i <= 0) 0 else i
         for {
           oldSize <- stateRef.get.map(_.size)
           updated <- stateRef.update(_ :+ item)
           _ <- ZIO.effect(
-                fireIntervalAdded(this, oldSize - 1, updated.size - 1)
+                fireIntervalAdded(this, trim(oldSize - 1), trim(updated.size - 1))
               )
         } yield ()
+      }
 
       def addItems(items: Seq[T]): Task[Unit] =
         for {
@@ -64,7 +66,7 @@ object ZList {
     Task(new ZList(new JList(mdl))).tap(_.onSimpleSelect(onSelected))
 }
 
-final class ZList[T](val component: JList[T]) extends ZComponent[JList[T]] {
+class ZList[T](val component: JList[T]) extends ZComponent[JList[T]] {
   def selectedIndex(idx: Int): Task[Unit] = propW(_.setSelectedIndex)(idx)
   def selectedIndex: UIO[Int]             = prop(_.getSelectedIndex)
   def selected: Task[T]                   = prop(_.getSelectedValue)

@@ -3,11 +3,11 @@ package zio.gui.zswing.components
 import java.awt.event.{ WindowEvent, WindowListener }
 import java.awt.Container
 
-import ZFrame.FramePromise
-import ZFrameEvent._
-import ZMenu._
 import javax.swing.JFrame
 import zio._
+import zio.gui.zswing.components.ZFrame.FramePromise
+import zio.gui.zswing.components.ZFrameEvent._
+import zio.gui.zswing.components.ZMenu._
 
 class ZFrame(jFrame: JFrame, onClose: FramePromise[Unit]) extends ZContainer[JFrame] {
   override def component: JFrame = jFrame
