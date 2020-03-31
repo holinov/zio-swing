@@ -41,7 +41,7 @@ lazy val controls = (project in file("controls"))
   )
   .dependsOn(core)
 
-lazy val root = (project in file("."))
+lazy val zioSwingRoot = (project in file("."))
   .aggregate(core, controls)
 
 // Aliases

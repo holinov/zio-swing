@@ -10,15 +10,12 @@ final class ZLog[T](val component: JList[T], inputQueue: Queue[T]) extends ZComp
 }
 object ZLog {
   def apply[T](list: ZList[T], inputQueue: Queue[T]): ZLog[T] = new ZLog(list.component, inputQueue)
-}
 
-trait ZLogFactory[F[_]] {
-  def make[T](implicit fac: ZComponentFactory[F]): F[ZLog[T]]
-}
+  trait Factory[F[_]] {
+    def make[T](implicit fac: ZComponentFactory[F]): F[ZLog[T]]
+  }
 
-object ZLogFactory {
-  implicit val taskInstance: ZLogFactory[Task] = new ZLogFactory[Task] {
-
+  implicit val taskInstance: ZLog.Factory[Task] = new ZLog.Factory[Task] {
     override def make[T](implicit fac: ZComponentFactory[Task]): Task[ZLog[T]] =
       for {
         mdl   <- ObservableListModel.make[T]

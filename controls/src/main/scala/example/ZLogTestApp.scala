@@ -23,7 +23,7 @@ object ZLogTestApp extends App {
       itemNoOp("Item 4")
     )
 
-    def buildMainScreen(implicit c: ZComponentFactory[Task], lf: ZLogFactory[Task]) = {
+    def buildMainScreen(implicit c: ZComponentFactory[Task], lf: ZLog.Factory[Task]) = {
       def leftMenu(contents: ZLabel) =
         for {
           lst  <- c.list((0 to 100).map(idx => s"SYMBOL $idx"): _*)
