@@ -47,7 +47,7 @@ object ExampleUiApp extends App {
         for {
           lst  <- c.list((0 to 100).map(idx => s"SYMBOL $idx"): _*)
           _    <- lst.onSimpleSelect(selected => contents.text(selected))
-          pane <- ZIO.effect(ZComponent(new JScrollPane(lst.component)))
+          pane <- ZIO.effect(ZComponent(new JScrollPane(lst.component))) // You could import raw SWING components
           _    <- pane.setPreferredSize(100, 300)
         } yield pane
 
